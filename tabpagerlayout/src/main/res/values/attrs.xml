@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TabPagerLayout">
+        <attr name="backgroundColor" format="color" />
+        <attr name="tabTextSize" format="dimension" />
+        <attr name="tabHeight" format="dimension" />
+        <attr name="tabNormalTextColor" format="color"/>
+        <attr name="tabSelectedTextColor" format="color"/>
+        <attr name="tabIndicatorColor" format="color"/>
+        <attr name="tabIndicatorHeight" format="dimension"/>
+        <attr name="toolbarShowUp" format="boolean" />
+        <attr name="toolbarTitle" format="string"/>
+        <attr name="toolbarTitleColor" format="color"/>
+    </declare-styleable>
+</resources>

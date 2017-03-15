@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<me.stupidme.tabpagerlayout.TabPagerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_pager_layout"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent" />
