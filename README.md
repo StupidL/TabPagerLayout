@@ -4,8 +4,7 @@ A View based on ViewPager and TabLayout.
 
 ## Demo  
 
-![TabPagerLayout-Demo](https://github.com/StupidL/TabPagerLayout/tree/master/art/TabPagerLayout.gif)  
-
+<img src="art/TabPagerLayout.gif" width="320px" />
 
 ## Attrs
 
