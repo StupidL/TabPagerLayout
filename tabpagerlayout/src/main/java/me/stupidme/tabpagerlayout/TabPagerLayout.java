@@ -11,8 +11,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -292,7 +292,7 @@ public class TabPagerLayout extends CoordinatorLayout {
 
     public TabPagerLayout setTabHeight(float height) {
         mTabHeight = height;
-        LayoutParams params = (LayoutParams) mTabLayout.getLayoutParams();
+        ViewGroup.LayoutParams params = mTabLayout.getLayoutParams();
         params.height = (int) mTabHeight;
         mTabLayout.setLayoutParams(params);
         return this;
