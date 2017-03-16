@@ -3,4 +3,13 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="red_800">#C62828</color>
+    <color name="deep_orange_800">#D84315</color>
+    <color name="indigo_800">#283593</color>
+    <color name="teal_800">#00695C</color>
+    <color name="purple_800">#6A1B9A</color>
+    <color name="light_green_800">#558B2F</color>
+    <color name="brown_600">#6D4C41</color>
+    <color name="blue_grey_600">#546E7A</color>
 </resources>

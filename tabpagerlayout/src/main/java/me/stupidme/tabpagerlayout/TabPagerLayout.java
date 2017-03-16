@@ -6,15 +6,15 @@ import android.graphics.Color;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -74,16 +74,6 @@ public class TabPagerLayout extends CoordinatorLayout {
     private int mToolbarTitleColor;
 
     /**
-     * An array to store colors for tabs. Each tab's color is mColorArray[tabPosition].
-     */
-    private int[] mColorArray;
-
-    /**
-     * An array to store titles for tabs. Each tab's title is mTitleArray[tabPosition].
-     */
-    private String[] mTitleArray;
-
-    /**
      * A callback listener. You can add some methods to this interface to implements callback functions.
      */
     private TabPagerLayoutListener mListener;
@@ -93,14 +83,11 @@ public class TabPagerLayout extends CoordinatorLayout {
      */
     private TabLayout.OnTabSelectedListener mTabSelectedColorListener;
 
-    /**
-     * A list to store fragments which is used by PagerAdapter.
-     */
-    private List<Fragment> mFragments;
-
     private ViewPagerAdapter mAdapter;
 
     private Context mContext;
+
+    private List<TabItem> mTabItems;
 
     public TabPagerLayout(Context context) {
         this(context, null, 0);
@@ -115,6 +102,7 @@ public class TabPagerLayout extends CoordinatorLayout {
         if (!isInEditMode()) {
             initView(context);
             initAttrs(context, attrs, defStyleAttr);
+            initFields();
         }
     }
 
@@ -155,10 +143,37 @@ public class TabPagerLayout extends CoordinatorLayout {
         mTabLayout.setTabTextColors(mTabNormalTextColor, mTabSelectedTextColor);
         mTabLayout.setSelectedTabIndicatorColor(mTabIndicatorColor);
         mTabLayout.setSelectedTabIndicatorHeight((int) mTabIndicatorHeight);
-
+        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         mTabLayout.setupWithViewPager(mViewPager);
 
         array.recycle();
+    }
+
+    private void initFields() {
+        mTabItems = new ArrayList<>();
+        mAdapter = new ViewPagerAdapter(((AppCompatActivity) mContext).getSupportFragmentManager(), mTabItems);
+        mViewPager.setAdapter(mAdapter);
+
+        mTabSelectedColorListener = new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mToolbar.setBackgroundColor(mTabItems.get(tab.getPosition()).getTabColor());
+                mTabLayout.setBackgroundColor(mTabItems.get(tab.getPosition()).getTabColor());
+                mTabLayout.setTabTextColors(mTabNormalTextColor, mTabSelectedTextColor);
+                mTabLayout.setSelectedTabIndicatorColor(mTabIndicatorColor);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        };
+        mTabLayout.addOnTabSelectedListener(mTabSelectedColorListener);
     }
 
     public TabPagerLayout setTabPagerLayoutListener(TabPagerLayoutListener layoutListener) {
@@ -167,56 +182,69 @@ public class TabPagerLayout extends CoordinatorLayout {
         return this;
     }
 
-    public TabPagerLayout setFragments(List<Fragment> list) {
-        mFragments = list;
-        if (mTitleArray != null && mFragments != null) {
-            mAdapter = new ViewPagerAdapter(((AppCompatActivity) mContext).getSupportFragmentManager(),
-                    mTitleArray, mFragments);
-            mViewPager.setAdapter(mAdapter);
-        } else {
-            throw new NullPointerException("titles array is null or fragment list is null");
-        }
+    public TabPagerLayout addOnTabSelectedListener(TabLayout.OnTabSelectedListener listener) {
+        mTabLayout.addOnTabSelectedListener(listener);
+        return this;
+    }
+
+    public TabPagerLayout addTabItem(int position, TabItem item) {
+        mTabItems.add(position, item);
+        mAdapter.notifyDataSetChanged();
+        return this;
+    }
+
+    public TabPagerLayout addTabItem(TabItem item) {
+        mTabItems.add(item);
+        mAdapter.notifyDataSetChanged();
+        return this;
+    }
+
+    public TabPagerLayout addAllTabItems(List<TabItem> items) {
+        mTabItems.addAll(items);
+        mAdapter.notifyDataSetChanged();
+        return this;
+    }
+
+    public TabPagerLayout addAllTabItems(int position, List<TabItem> items) {
+        mTabItems.addAll(position, items);
+        mAdapter.notifyDataSetChanged();
+        return this;
+    }
+
+    public TabPagerLayout removeTabItem(int position) {
+        mTabItems.remove(position);
+        mAdapter.notifyDataSetChanged();
+        return this;
+    }
+
+    public TabPagerLayout removeTabItem(TabItem item) {
+        mTabItems.remove(item);
+        mAdapter.notifyDataSetChanged();
+        return this;
+    }
+
+    public TabPagerLayout removeAllTabItems(List<TabItem> items) {
+        mTabItems.removeAll(items);
+        mAdapter.notifyDataSetChanged();
+        return this;
+    }
+
+    public TabPagerLayout clearTabItems() {
+        mTabItems.clear();
+        mAdapter.notifyDataSetChanged();
         return this;
     }
 
     public List<Fragment> getFragments() {
-        return mFragments;
+        List<Fragment> list = new ArrayList<>();
+        for (TabItem item : mTabItems) {
+            list.add(item.getTabFragment());
+        }
+        return list;
     }
 
     public Fragment getFragment(int position) {
-        return mFragments.get(position);
-    }
-
-    public TabPagerLayout setColorArray(int[] array) {
-        mColorArray = array;
-        if (mTabSelectedColorListener == null) {
-            mTabSelectedColorListener = new TabLayout.OnTabSelectedListener() {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    mToolbar.setBackgroundColor(mColorArray[tab.getPosition()]);
-                    mTabLayout.setBackgroundColor(mColorArray[tab.getPosition()]);
-                    mTabLayout.setTabTextColors(mTabNormalTextColor, mTabSelectedTextColor);
-                    mTabLayout.setSelectedTabIndicatorColor(mTabIndicatorColor);
-                }
-
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
-
-                }
-
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
-
-                }
-            };
-        }
-        mTabLayout.addOnTabSelectedListener(mTabSelectedColorListener);
-        return this;
-    }
-
-    public TabPagerLayout setTitleArray(String[] array) {
-        mTitleArray = array;
-        return this;
+        return mTabItems.get(position).getTabFragment();
     }
 
     public TabPagerLayout setupBackgroundColor(int color) {
@@ -228,7 +256,7 @@ public class TabPagerLayout extends CoordinatorLayout {
 
     public TabPagerLayout setToolbarTitle(String title) {
         mToolbarTitle = title;
-        mToolbar.setTitle(mToolbarTitle);
+        mActionBar.setTitle(mToolbarTitle);
         return this;
     }
 
@@ -238,7 +266,7 @@ public class TabPagerLayout extends CoordinatorLayout {
         return this;
     }
 
-    public TabPagerLayout toolbarShowUp(boolean show) {
+    public TabPagerLayout showToolbarUp(boolean show) {
         mActionBar.setDisplayHomeAsUpEnabled(show);
         return this;
     }
@@ -288,30 +316,4 @@ public class TabPagerLayout extends CoordinatorLayout {
         void setToolbarUpOnClickListener(ActionBar actionBar);
     }
 
-    private class ViewPagerAdapter extends FragmentPagerAdapter {
-        private String[] mTitles;
-
-        private List<Fragment> mFragments;
-
-        ViewPagerAdapter(FragmentManager fm, String[] titles, List<Fragment> list) {
-            super(fm);
-            mTitles = titles;
-            mFragments = list;
-        }
-
-        @Override
-        public int getCount() {
-            return mFragments.size();
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragments.get(position);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mTitles[position];
-        }
-    }
 }
