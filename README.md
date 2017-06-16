@@ -24,7 +24,25 @@ A View based on ViewPager and TabLayout.
 ```  
 
 
-## Usage
+## Usage  
+
+* Gradle  
+Add repository in your root build.gradle file:  
+```gradle  
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+```  
+
+Add dependency in your module level build.gradle file:  
+```gradle  
+compile 'com.github.StupidL:tabpagerlayout:0.1.0'  
+```  
+
 
 * Add TabPagerLayout in your xml files.  
 
